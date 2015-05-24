@@ -63,6 +63,11 @@
 }
 - (IBAction)LoginClicked:(id)sender {
     
+    
+
+    
+    
+    
     // create a progress bar here:
     UIProgressView* progressView = [[UIProgressView alloc]initWithProgressViewStyle:UIProgressViewStyleBar];
     
@@ -75,37 +80,52 @@
     
     [self.btnLogin setEnabled:NO];
     [self.btnCancel setEnabled:NO];
+//    
+//    UIActionSheet* actionSheet = [[UIActionSheet alloc]initWithTitle:@"Loading" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles: nil,nil];
     
-    UIActionSheet* actionSheet = [[UIActionSheet alloc]initWithTitle:@"Loading" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles: nil];
+    UIAlertView* alertView = [[UIAlertView alloc]initWithTitle:@"Loading" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
     
-    [progressView setFrame:CGRectMake(0, 0, actionSheet.bounds.size.width, actionSheet.bounds.size.height)];
+   // [progressView setFrame:CGRectMake(0, 0, actionSheet.bounds.size.width, actionSheet.bounds.size.height)];
+    
+   // [progressView setFrame:CGRectMake(0, 10, 100, 3)];
     
    // UIAlertView* actionSheet = [[UIAlertView alloc]initWithTitle:@"Loading" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
     
     progressView.progress = 0;
-     [actionSheet setBounds:CGRectMake(0, 0, 300, 300)];
+     [alertView setBounds:CGRectMake(0, 0, 300, 300)];
     
     //[self.view addSubview:progressView];
-    
-    [actionSheet addSubview:progressView];
-    [actionSheet showInView:self.view];
+    // accessoryView is the key to support subview or ios 7, seems still works well on ios 8
+    [alertView setValue:progressView forKey:@"accessoryView"];
+    [alertView show];
    
     
     
     //[actionSheet dismissWithClickedButtonIndex:1 animated:YES];
     
-    NSArray* userInfo = [[NSArray alloc]initWithObjects:actionSheet, progressView, nil];
+    NSArray* userInfo = [[NSArray alloc]initWithObjects:alertView, progressView, nil];
     
     NSTimer* t = [NSTimer timerWithTimeInterval:0.05 target:self selector:@selector(updatebar:) userInfo:userInfo repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:t forMode:NSRunLoopCommonModes];
     
     NSLog(@"Done");
 }
+- (IBAction)ClickedCancel:(id)sender {
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"TEST" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+    UIProgressView* progress = [[UIProgressView alloc]initWithProgressViewStyle:UIProgressViewStyleBar];
+    [progress setFrame:CGRectMake(0, 10, 100, 3)];
+    progress.progress = 0.8;
+    //UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 40)];
+    [av setValue:progress forKey:@"accessoryView"];
+    //v.backgroundColor = [UIColor yellowColor];
+    [av show];
+
+}
 
 - (void)updatebar:(NSTimer*)time
 {
     UIProgressView* p = [[time userInfo] objectAtIndex:1];
-    UIActionSheet* sheet = [[time userInfo] objectAtIndex:0];
+    UIAlertView* sheet = [[time userInfo] objectAtIndex:0];
     p.progress += 0.01;
     
     [sheet setNeedsDisplay];
